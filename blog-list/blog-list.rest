@@ -1,0 +1,13 @@
+get http://localhost:3003/api/blogs
+
+###
+
+post http://localhost:3003/api/blogs
+content-type: application/json
+
+{
+    "title": "fans are cooler",
+    "author": "Havelles",
+    "url": "NA",
+    "likes": 21
+}
