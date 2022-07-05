@@ -6,11 +6,10 @@ router.get("/", (req, res) => {
         .then(blogs => res.json(blogs))
 })
 
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
     const blog = new Blog(req.body);
-    blog.save()
-        .then(savedBlog => res.status(201).json(savedBlog))
-        .catch(err => res.status(400).json({error: err.message}))
+    const saved = await blog.save();
+    res.status(201).json(saved);
 })
 
 module.exports = router;

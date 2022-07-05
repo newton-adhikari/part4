@@ -47,6 +47,24 @@ test("unique identifier of blog post is id", async () => {
     expect(singleBlog.id).toBeDefined();
 })
 
+test("a new blog post can be created", async() => {
+    const blog = {      
+        title: "Canonical string reduction",
+        author: "Edsger W. Dijkstra",
+        url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
+        likes: 12,
+    };
+
+    await api
+        .post("/api/blogs")
+        .send(blog)
+        .expect(201)
+        .expect("Content-Type", /application\/json/)
+
+    const response = await api.get("/api/blogs");
+    expect(response.body).toHaveLength(initialBlogs.length + 1);
+})
+
 afterAll(() => {
     mongoose.connection.close()
 })
