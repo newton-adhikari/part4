@@ -14,4 +14,16 @@ const favoriteBlog = (blogs) => {
     return blogs.find(({likes}) => likes === maxLikes);
 }
 
-module.exports = {dummy, totalLikes, favoriteBlog};
+const mostBlogs = (blogs) => {
+    if(!blogs.length) return null;
+    const authors = blogs.map(b => {return {author: b.author, blogs: 0}});
+    authors.forEach(a => {
+        authors.forEach(auth => {
+            if(auth.author === a.author) a.blogs += 1;
+        })
+    })
+    const max = Math.max(...authors.map(a => a.blogs));
+    return authors.find(a => a.blogs === max);
+}
+
+module.exports = {dummy, totalLikes, favoriteBlog, mostBlogs};
