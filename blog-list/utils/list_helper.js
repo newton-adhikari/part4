@@ -26,4 +26,23 @@ const mostBlogs = (blogs) => {
     return authors.find(a => a.blogs === max);
 }
 
-module.exports = {dummy, totalLikes, favoriteBlog, mostBlogs};
+const mostLikes = (blogs) => {
+    if(!blogs.length) return null;
+    const most = [];
+    const authors = blogs
+        .map(b => {return {author: b.author, likes: b.likes}});
+    let unique = authors.map(a => a.author);
+    unique = unique.filter((a, i) => unique.indexOf(a) === i);
+
+    unique.forEach(a => {
+        let total = 0;
+        authors.forEach(auth => {
+            if(auth.author === a) total += auth.likes;
+        })
+        most.push({author: a, likes: total});
+    })
+    const max = Math.max(...most.map(m => m.likes))
+    return most.find(a => a.likes === max);
+}
+
+module.exports = {dummy, totalLikes, favoriteBlog, mostBlogs, mostLikes};
