@@ -76,6 +76,37 @@ test("like property defaults to 0 if not given", async() => {
     expect(saved.body.likes).toBeDefined();
 })
 
+test("title property must be present", async() => {
+    const blog = {
+        author: "Robert C. Martin",
+        url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",  
+    }
+
+    await api
+        .post("/api/blogs")
+        .send(blog)
+        .expect(400)
+
+    const response = await api.get("/api/blogs");
+    expect(response.body).toHaveLength(initialBlogs.length);
+})
+
+test("url property must be present", async() => {
+    const blog = {
+        title: "new age computers",
+        author: "Robert C. Martin",
+    }
+
+    await api
+    .post("/api/blogs")
+    .send(blog)
+    .expect(400)
+
+    const response = await api.get("/api/blogs");
+    expect(response.body).toHaveLength(initialBlogs.length);
+
+})
+
 afterAll(() => {
     mongoose.connection.close()
 })
