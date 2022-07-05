@@ -65,6 +65,17 @@ test("a new blog post can be created", async() => {
     expect(response.body).toHaveLength(initialBlogs.length + 1);
 })
 
+test("like property defaults to 0 if not given", async() => {
+    const blog = {      
+        title: "First class tests",
+        author: "Robert C. Martin",
+        url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll",
+    }
+
+    const saved = await api.post("/api/blogs").send(blog);
+    expect(saved.body.likes).toBeDefined();
+})
+
 afterAll(() => {
     mongoose.connection.close()
 })
