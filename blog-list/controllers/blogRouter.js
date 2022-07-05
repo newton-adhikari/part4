@@ -16,4 +16,12 @@ router.post("/", async (req, res) => {
     res.status(201).json(saved);
 })
 
+router.delete("/:id", async(req, res) => {
+    const blog = await Blog.findById(req.params.id);
+    if(!blog) return res.status(400).json({error: "post not found"});
+    
+    await Blog.findByIdAndRemove(req.params.id);
+    res.send();
+})
+
 module.exports = router;
