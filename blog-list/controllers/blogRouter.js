@@ -3,14 +3,6 @@ const Blog = require("../models/blog");
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 
-const tokenExtractor = (req) => {
-    const token = req.get("authorization");
-    if(token && token.toLowerCase().startsWith("bearer")) {
-        return token.substring(7);
-    }
-    return null;
-}
-
 router.get("/", async (req, res) => {
     const blogs = await Blog.find({}).populate("user", {username: 1, name: 1});
     res.json(blogs);
@@ -18,11 +10,11 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res, next) => {
     try {
-        const token = tokenExtractor(req);
+        const token = req.token;
         if(!token) return res.status(401).json({error: "unverified user"});
     
         const decoded = jwt.verify(token, process.env.SECRET);
-        const {title, author, url} = req.body;
+        const {title, url} = req.body;
         
         const user = await User.findById(decoded.id);
         if(!user) return res.status(400).json({error: "not authorized"});
