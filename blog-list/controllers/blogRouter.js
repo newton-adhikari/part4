@@ -1,18 +1,27 @@
 const router = require("express").Router();
 const Blog = require("../models/blog");
+const User = require("../models/user");
 
 router.get("/", async (req, res) => {
-    const blogs = await Blog.find({});
+    const blogs = await Blog.find({}).populate("user", {username: 1, name: 1});
     res.json(blogs);
 })
 
 router.post("/", async (req, res) => {
-    const {title, author, url} = req.body;
+    const {title, author, url, userId} = req.body;
     
+    const user = await User.findById(userId);
+    if(!user) return res.status(400).json({error: "not authorized"});
+
     if(!title || !url) return res.status(400).json({error: "missing title or url"});
     
     const blog = new Blog(req.body);
+    blog.user = user._id;
     const saved = await blog.save();
+
+    user.blogs = user.blogs.concat(blog)
+    await user.save();
+
     res.status(201).json(saved);
 })
 

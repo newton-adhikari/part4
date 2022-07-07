@@ -6,10 +6,11 @@ post http://localhost:3003/api/blogs
 content-type: application/json
 
 {
-    "title": "fans are cooler",
+    "title": "John Nash is a mathematician",
     "author": "Havelles",
     "url": "NA",
-    "likes": 21
+    "likes": 21,
+    "userId": "62c644b4b149cb18782ed514"
 }
 
 ###
