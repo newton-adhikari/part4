@@ -35,12 +35,22 @@ router.post("/", async (req, res, next) => {
     }
 })
 
-router.delete("/:id", async(req, res) => {
-    const blog = await Blog.findById(req.params.id);
-    if(!blog) return res.status(400).json({error: "post not found"});
+router.delete("/:id", async(req, res, next) => {
+    try {
+        const token = jwt.verify(req.token, process.env.SECRET);
 
-    await Blog.findByIdAndRemove(req.params.id);
-    res.send();
+        const blog = await Blog.findById(req.params.id);
+        if(!blog) return res.status(400).json({error: "post not found"});
+    
+        const userId = blog.user._id.toString();
+        if(userId !== token.id) return res.status(401).json({error: "unauthorized"});
+
+        await Blog.findByIdAndRemove(req.params.id);
+        res.send();
+    }
+    catch(e) {
+        next(e);
+    }
 })
 
 router.put("/:id", async(req, res) => {
