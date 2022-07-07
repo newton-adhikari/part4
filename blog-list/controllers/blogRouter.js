@@ -13,7 +13,7 @@ router.post("/", userExtractor, async (req, res, next) => {
     try {
         const {title, url} = req.body;
         
-        const user = req.user;
+        const user = req.user;  
         if(!user) return res.status(400).json({error: "not authorized"});
     
         if(!title || !url) return res.status(400).json({error: "missing title or url"});

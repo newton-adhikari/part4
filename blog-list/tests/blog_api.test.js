@@ -57,12 +57,31 @@ test("a new blog post can be created", async() => {
 
     await api
         .post("/api/blogs")
+        .set("authorization", "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyYzY0NGI0YjE0OWNiMTg3ODJlZDUxNCIsInVzZXJuYW1lIjoiYWRrIiwiaWF0IjoxNjU3MTY5OTQ4fQ.EbONYzyEcnv1OFN_SmFn550L50_jloiS7c4mEHU3QTg")
         .send(blog)
         .expect(201)
         .expect("Content-Type", /application\/json/)
 
     const response = await api.get("/api/blogs");
     expect(response.body).toHaveLength(initialBlogs.length + 1);
+})
+
+test("creation of blog fails without providing token", async() => {
+    const blog = {      
+        title: "Canonical string reduction",
+        author: "Edsger W. Dijkstra",
+        url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
+        likes: 12,
+    };
+
+    await api
+        .post("/api/blogs")
+        .send(blog)
+        .expect(401)
+
+    const response = await api.get("/api/blogs");
+    expect(response.body).toHaveLength(initialBlogs.length);
+
 })
 
 test("like property defaults to 0 if not given", async() => {
