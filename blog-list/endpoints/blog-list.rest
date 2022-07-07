@@ -3,14 +3,14 @@ get http://localhost:3003/api/blogs
 ###
 
 post http://localhost:3003/api/blogs
+Authorization: bearer eyJhbGciOiJIUzI1N6IkpXVCJ9.eyJpZCI6IjYyYzY0NGI0YjE0OWNiMTg3ODJlZDUxNCIsInVzZXJuYW1lIjoiYWRrIiwiaWF0IjoxNjU3MTYzMTYwfQ.3ek2pERFWSqryyn-v5qYOj5YPwx-2NbsN-WkDrgn9vw
 content-type: application/json
 
 {
-    "title": "John Nash is a mathematician",
-    "author": "Havelles",
+    "title": "Hello world",
+    "author": "john nash",
     "url": "NA",
-    "likes": 21,
-    "userId": "62c644b4b149cb18782ed514"
+    "likes": 25
 }
 
 ###
