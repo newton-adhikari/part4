@@ -2,21 +2,18 @@ const router = require("express").Router();
 const Blog = require("../models/blog");
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
+const { userExtractor } = require("../utils/middleware");
 
 router.get("/", async (req, res) => {
     const blogs = await Blog.find({}).populate("user", {username: 1, name: 1});
     res.json(blogs);
 })
 
-router.post("/", async (req, res, next) => {
+router.post("/", userExtractor, async (req, res, next) => {
     try {
-        const token = req.token;
-        if(!token) return res.status(401).json({error: "unverified user"});
-    
-        const decoded = jwt.verify(token, process.env.SECRET);
         const {title, url} = req.body;
         
-        const user = await User.findById(decoded.id);
+        const user = req.user;
         if(!user) return res.status(400).json({error: "not authorized"});
     
         if(!title || !url) return res.status(400).json({error: "missing title or url"});
@@ -35,15 +32,13 @@ router.post("/", async (req, res, next) => {
     }
 })
 
-router.delete("/:id", async(req, res, next) => {
+router.delete("/:id", userExtractor, async(req, res, next) => {
     try {
-        const token = jwt.verify(req.token, process.env.SECRET);
-
         const blog = await Blog.findById(req.params.id);
         if(!blog) return res.status(400).json({error: "post not found"});
     
         const userId = blog.user._id.toString();
-        if(userId !== token.id) return res.status(401).json({error: "unauthorized"});
+        if(userId !== req.user._id.toString()) return res.status(401).json({error: "unauthorized"});
 
         await Blog.findByIdAndRemove(req.params.id);
         res.send();
